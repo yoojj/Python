@@ -47,6 +47,7 @@ def func(str='매개 변수'):
 - nonlocal
 
 ```python
+# global
 num = 0
 
 def func():
@@ -58,12 +59,31 @@ print(num == 0)
 
 func()
 print(num == 1)  
+
+
+# nonlocal
+num = 0
+
+def outer():
+    num = 1
+    print(num == 1)
+
+    def inner():
+        # 외부 함수의 변수에 영향을 미치며 전역 변수에 영향을 미치지 않음 
+        nonlocal num
+        num = 10
+
+    inner()
+    print(num == 10)
+
+outer()
+print(num == 0)
 ```
 
 
 
 **변수 타입**   
-: python3.5부터 패키지를 통해 타입 검사 지원
+: python3.5부터 패키지를 통해 타입 검사 지원   
 &nbsp; (https://www.python.org/dev/peps/pep-0484/)
 
 - typeshed
