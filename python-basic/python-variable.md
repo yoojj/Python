@@ -1,6 +1,8 @@
 # Python Variable
-: 변수 선언 및 초기화 없음  
-: 변수 할당시 키-값을 생성하고 키가 존재하면 값을 업데이트함      
+: 변수 선언(declaration) 및 초기화 없음   
+: 변수 할당(assignment)시 키/값을 생성하고 키가 존재하면 값을 업데이트함      
+: 상수를 지원하지 않으나 python3.8부터 지원하는 final 키워드 통해 재할당 방지  
+&nbsp; (https://www.python.org/dev/peps/pep-0591/)   
 
 
 **변수 할당**
@@ -33,7 +35,7 @@ id(n1) == id(n2)
 num = 0
 
 def func(str='매개 변수'):
-    # 지역 변수 : 전역 변수와 지역 변수의 이름이 같아도 스코프가 다르기 때문에 다른 변수
+    # 지역 변수 : 전역 변수와 지역 변수의 이름이 같아도 스코프가 다르므로 다른 변수로 취급
     num = 100
 ```
 
@@ -56,6 +58,24 @@ print(num == 0)
 
 func()
 print(num == 1)  
+```
+
+
+
+**변수 타입**   
+: python3.5부터 패키지를 통해 타입 검사 지원
+&nbsp; (https://www.python.org/dev/peps/pep-0484/)
+
+- typeshed
+- MyPy
+- PyType
+
+```python
+# variable_name : type
+
+string: str = ""
+
+numbers: List[int] = [1,2,3,4,5]
 ```
 
 
