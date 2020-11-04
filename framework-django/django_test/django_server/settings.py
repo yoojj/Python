@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+import os, sys
 import environ
 
 
@@ -8,20 +8,23 @@ environ.Env.read_env()
 ENV = environ.Env()
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+DEBUG = True
+
+
+ALLOWED_HOSTS = ('127.0.0.1', 'localhost',)
 
 
 SECRET_KEY = ENV('SECRET_KEY')
 
 
-DEBUG = True
-
-
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Application definition
-INSTALLED_APPS = [
+WSGI_APPLICATION = 'django_server.wsgi.application'
+
+
+INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,10 +33,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'storages',
     'django_app',
-]
+)
 
-MIDDLEWARE = [
+MIDDLEWARE = (
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -42,9 +46,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-ROOT_URLCONF = 'django_server.urls'
+    'django_app.common.middleware.Middleware'
+)
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
@@ -54,6 +57,8 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ]
 }
+
+ROOT_URLCONF = 'django_server.urls'
 
 
 TEMPLATES = [
@@ -72,10 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'django_server.wsgi.application'
 
-
-# Database
 DATABASES = {
     'default': {
         'ENGINE': ENV('DB_ENGINE'),
@@ -88,7 +90,6 @@ DATABASES = {
 }
 
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -105,28 +106,54 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+
+USE_TZ = True
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-
-
-# Cors
-CORS_ALLOW_HEADERS = [
+CORS_ALLOW_HEADERS = (
+    'content-type',
     'x-csrftoken',
     '___internal-request-id',
-]
+)
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+# AWS
+AWS_ACCESS_KEY_ID = ENV('AWS_ACCESS_KEY_ID')
+
+AWS_SECRET_ACCESS_KEY = ENV('AWS_SECRET_ACCESS_KEY')
+
+AWS_REGION = ENV('AWS_REGION')
+
+AWS_STORAGE_BUCKET_NAME = ENV('AWS_STORAGE_BUCKET_NAME')
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % ( AWS_STORAGE_BUCKET_NAME, AWS_REGION)
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_DEFAULT_ACL = 'public-read'
+
+AWS_LOCATION = 'static'
+
+
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+DEFAULT_FILE_STORAGE = 'config.asset_storage.MediaStorage'
