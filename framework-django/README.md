@@ -2,6 +2,7 @@
 
 - [Django Install](#djnago-install)
 - [Django Structure](#djnago-structure)
+- [Django MTV](./django-mtv.md)
 
 
 
@@ -22,16 +23,34 @@ $ django-admin --version
 $ pip freeze > requirements.txt
 
 
-# 프로젝트 생성 및 실행 
+# 프로젝트 생성
 $ django-admin startproject [프로젝트]
-$ python manage.py startapp [app]
 
-$ python manage.py makemigrations [app]
+# 앱 생성
+$ python manage.py startapp [앱]
+
+# 모델 변경 사항 추적
+$ python manage.py makemigrations
+
+# 디비 생성 및 변경 사항 반영
 $ python manage.py migrate
+
+## 테이블이 생성되지 않을 경우
+$ python manage.py migrate --fake [앱] zero
+
+
+# 관리자 생성
+$ python manage.py createsuperuser
+
+# 관리자 비밀번호 변경
+$ python manage.py changepassword
+
+
+# 서버 실행
 $ python manage.py runserver
 
 
-# test 실행
+# 테스트 실행
 $ python manage.py test
 $ python manage.py test -v 3
 ```
@@ -42,7 +61,6 @@ $ python manage.py test -v 3
 ```bash
 project/
 ├── project_app/
-│   ├── __init__.py
 │   ├── admin.py
 │   ├── apps.py
 │   ├── models.py
@@ -50,7 +68,6 @@ project/
 │   ├── test.py
 │   └── views.py
 ├── project_server/
-│   ├── __init__.py
 │   ├── asgi.py        
 │   ├── settings.py  
 │   ├── urls.py        
@@ -62,3 +79,19 @@ project/
 
 \+ ASGI    
 https://github.com/yoojj/Python/blob/master/wsgi.md#asgi
+
+
+
+### settings  
+https://docs.djangoproject.com/en/3.0/ref/settings/
+
+**database**   
+- django.db.backends.sqlite3
+- django.db.backends.mysql
+- django.db.backends.postgresql_psycopg2
+- django.db.backends.oracle
+- ...
+
+
+
+[top](#)
